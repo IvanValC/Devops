@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+    matchExpressions:
+      - {key: app, operator: In, values: [nginx]}
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+# https://kubernetes.io/es/docs/concepts/workloads/controllers/replicaset/
+# Statless
+# Escalado
+# Respuesta a Fallo
+
+# kubectl apply -f replicaset.yaml
+# kubectl get all
+# kubectl scale rs nginx --replicas=5  escalar
+# kubectl delete pod nombre...
+# kubectl get all
+# kubectl delete -f replicaset.yaml

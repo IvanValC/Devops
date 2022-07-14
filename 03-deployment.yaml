@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+  labels:
+    app: deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: deployment
+  template:
+    metadata:
+      labels:
+        app: deployment
+    spec:
+      volumes:
+      - name: shared-data
+        emptyDir: {}
+      initContainers:
+      - name: content
+        image: alpine
+        volumeMounts:
+        - name: shared-data
+          mountPath: /pod-data
+        command: ["sh"]
+        args: ["-c", "echo Hola Mundo! > /pod-data/index.html"]
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: shared-data
+          mountPath: /usr/share/nginx/html
+
+# https://kubernetes.io/es/docs/concepts/workloads/controllers/deployment/
+# Rolling updates (no downtime)
+# Rollbacks
+# kubectl apply -f deployment.yaml
+# kubectl get all
+# kubectl deployment.apps/deployment
+# kubectl get deployment.apps/deployment -oyaml
+# kubectl get all
+# kubectl port-forward deployment-[pd-name] 8080:80
+# Modificar linea 27 hola su nombre
+# kubectl apply -f deployment.yaml
+# kubectl get all
+# kubectl port-forward deployment-[pd-name] 8080:80
+# kubectl rollout undo deployment.apps/deployment
+# kubectl get all
+# kubectl port-forward deployment-[pd-name] 8080:80
